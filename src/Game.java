@@ -1,16 +1,15 @@
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Game {
+    public static final Roles[][] TOWN_ROLES = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
+            RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
 
-    //have a list of possible roles
-    //classes for town, neutral, and werewolf
     private ArrayList<String> players;
     private boolean useApocalypse;
-
-    public static final Roles[][] TOWN_ROLES = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
-    RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
+    private int townRatio;
+    private int neutralRatio;
+    private int werewolfRatio;
 
     public Roles[][] neutralRoles;
 
@@ -23,6 +22,13 @@ public class Game {
             this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_BENIGN_ROLES};
         }
         this.players = new ArrayList<>();
+
+    }
+
+    private void roleRatio(int playerAmount){
+        //ratio 1 : 1: 5
+        werewolfRatio = (playerAmount/6)+1;
+        townRatio = playerAmount - werewolfRatio - neutralRatio;
     }
 
     public void setUseApocalypse(boolean useApocalypse) {
