@@ -1,3 +1,4 @@
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,18 +12,20 @@ public class Game {
     private int neutralAmount;
     private final boolean useApocalypse;
 
-    public static final Roles[][] townRoles = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
+    public static final Roles[][] TOWN_ROLES = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
     RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
 
-//    WerewolfRole werewolfRoles = new WerewolfRole("evil");
-//    NeutralRole neutralRoles = new NeutralRole("neutral");
+    public Roles[][] neutralRoles;
 
     public Game(boolean useApocalypse){
         this.useApocalypse = useApocalypse;
+        if(useApocalypse){
+            this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_APOCALYPSE_ROLES, RoleList.NEUTRAL_BENIGN_ROLES};
+        }else{
+            this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_BENIGN_ROLES};
+        }
         this.players = new ArrayList<>();
     }
-
-    //be able to set the amounts of each and generate a random list based on those amounts
 
     public void setWerewolfAmount(int werewolfAmount) {
         this.werewolfAmount = werewolfAmount;
@@ -37,57 +40,51 @@ public class Game {
     }
 
     private ArrayList<Roles> generateRandomTown(int amount){
-        ArrayList<Roles> possibleRoles = Arrays.asList(townRoles);
         ArrayList<Roles> theseTownRoles = new ArrayList<>();
 
         for(int i=0; i<amount; i++){
-            int randomTownList = (int) (Math.random() * townRoles.length);
-            int randomTown = (int) (Math.random() * townRoles[randomTownList].length);
-            theseTownRoles.add(townRoles[randomTownList][randomTown]);
+            int randomTownList = (int) (Math.random() * TOWN_ROLES.length);
+            int randomTown = (int) (Math.random() * TOWN_ROLES[randomTownList].length);
+            theseTownRoles.add(TOWN_ROLES[randomTownList][randomTown]);
         }
 
         return theseTownRoles;
     }
 
-    private ArrayList<String> generateRandomNeutral(int amount){
-        ArrayList<String> possibleRoles = neutralRoles.getNeutralBenign();
-        if(useApocalypse){
-            possibleRoles.addAll(neutralRoles.getNeutralApocalypse());
-        }
-        ArrayList<String> theseNeutralRoles = new ArrayList<>();
+    private ArrayList<Roles> generateRandomNeutral(int amount){
+        ArrayList<Roles> theseNeutralRoles = new ArrayList<>();
 
-        for (int i=0; i<amount; i++){
-            int randomNumber = (int) (Math.random() * possibleRoles.size());
-            theseNeutralRoles.add(possibleRoles.get(randomNumber));
-            possibleRoles.remove(randomNumber);
+        for (int i = 0; i < amount; i++) {
+            int randomNeutralList = (int) (Math.random() * neutralRoles.length);
+            int randomNeutral = (int) (Math.random() * neutralRoles[randomNeutralList].length);
+            theseNeutralRoles.add(neutralRoles[randomNeutralList][randomNeutral]);
         }
 
         return theseNeutralRoles;
     }
 
-    private ArrayList<String> generateRandomWerewolf(int amount){
-        ArrayList<String> possibleRoles = werewolfRoles.getWerewolfList();
 
-        ArrayList<String> theseWerewolfRoles = new ArrayList<>();
+    private ArrayList<Roles> generateRandomWerewolf(int amount){
+
+        ArrayList<Roles> theseWerewolfRoles = new ArrayList<>();
 
         for(int i=0; i<amount; i++){
-            int randomNumber = (int) (Math.random() * possibleRoles.size());
-            theseWerewolfRoles.add(possibleRoles.get(randomNumber));
-            possibleRoles.remove(randomNumber);
+            int randomWerewolf = (int) (Math.random() * RoleList.WEREWOLF_ROLES.length);
+            theseWerewolfRoles.add(RoleList.WEREWOLF_ROLES[randomWerewolf]);
         }
 
         return theseWerewolfRoles;
     }
 
-    public ArrayList<String> getTownRoles(int amount){
+    public ArrayList<Roles> getTownRoles(int amount){
         return generateRandomTown(amount);
     }
 
-    public ArrayList<String> getNeutralRoles(int amount){
+    public ArrayList<Roles> getNeutralRoles(int amount){
         return generateRandomNeutral(amount);
     }
 
-    public ArrayList<String> getWerewolfRoles(int amount){
+    public ArrayList<Roles> getWerewolfRoles(int amount){
         return generateRandomWerewolf(amount);
     }
 }
