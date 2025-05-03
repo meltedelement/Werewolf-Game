@@ -26,8 +26,10 @@ public class Game {
     }
 
     private void roleRatio(int playerAmount){
-        //ratio 1 : 1: 5
-        werewolfRatio = (playerAmount/6)+1;
+        //1 werewolf for every 5 people
+        //1 neutral for every 8 people
+        werewolfRatio = (int) Math.ceil((double) playerAmount / 5);
+        neutralRatio = (int) Math.ceil((double) playerAmount / 8);
         townRatio = playerAmount - werewolfRatio - neutralRatio;
     }
 
