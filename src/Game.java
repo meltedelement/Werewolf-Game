@@ -8,7 +8,7 @@ public class Game {
     private int werewolfAmount;
     private int townAmount;
     private int neutralAmount;
-    private boolean useApocalypse;
+    private final boolean useApocalypse;
 
     TownRole townRoles = new TownRole("town");
     WerewolfRole werewolfRoles = new WerewolfRole("evil");
@@ -16,6 +16,7 @@ public class Game {
 
     public Game(boolean useApocalypse){
         this.useApocalypse = useApocalypse;
+        this.players = new ArrayList<>();
     }
 
     //be able to set the amounts of each and generate a random list based on those amounts
@@ -43,6 +44,7 @@ public class Game {
         for(int i=0; i<amount; i++){
             int randomNumber = (int) (Math.random() * possibleRoles.size());
             theseTownRoles.add(possibleRoles.get(randomNumber));
+            possibleRoles.remove(randomNumber);
         }
 
         return theseTownRoles;
@@ -58,9 +60,24 @@ public class Game {
         for (int i=0; i<amount; i++){
             int randomNumber = (int) (Math.random() * possibleRoles.size());
             theseNeutralRoles.add(possibleRoles.get(randomNumber));
+            possibleRoles.remove(randomNumber);
         }
 
         return theseNeutralRoles;
+    }
+
+    private ArrayList<String> generateRandomWerewolf(int amount){
+        ArrayList<String> possibleRoles = werewolfRoles.getWerewolfList();
+
+        ArrayList<String> theseWerewolfRoles = new ArrayList<>();
+
+        for(int i=0; i<amount; i++){
+            int randomNumber = (int) (Math.random() * possibleRoles.size());
+            theseWerewolfRoles.add(possibleRoles.get(randomNumber));
+            possibleRoles.remove(randomNumber);
+        }
+
+        return theseWerewolfRoles;
     }
 
     public ArrayList<String> getTownRoles(int amount){
@@ -69,5 +86,9 @@ public class Game {
 
     public ArrayList<String> getNeutralRoles(int amount){
         return generateRandomNeutral(amount);
+    }
+
+    public ArrayList<String> getWerewolfRoles(int amount){
+        return generateRandomWerewolf(amount);
     }
 }

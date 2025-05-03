@@ -4,5 +4,6 @@ public class Main {
 
         System.out.println(test.getTownRoles(5));
         System.out.println(test.getNeutralRoles(2));
+        System.out.println(test.getWerewolfRoles(3));
     }
 }

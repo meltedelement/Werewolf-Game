@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public class NeutralRole extends Role{
-    private ArrayList<String> neutralApocalypse;
-    private ArrayList<String> neutralBenign;
+    private final ArrayList<String> neutralApocalypse;
+    private final ArrayList<String> neutralBenign;
 
     public NeutralRole(String name) {
 
