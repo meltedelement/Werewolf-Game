@@ -16,6 +16,7 @@ public enum Roles {
     Bodyguard,
     Witch,
     Escort,
+    Trickster,
 
     //Town Killing
     Deputy,
