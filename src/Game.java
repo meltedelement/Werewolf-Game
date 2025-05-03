@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game {
 
@@ -10,9 +11,11 @@ public class Game {
     private int neutralAmount;
     private final boolean useApocalypse;
 
-    TownRole townRoles = new TownRole("town");
-    WerewolfRole werewolfRoles = new WerewolfRole("evil");
-    NeutralRole neutralRoles = new NeutralRole("neutral");
+    public static final Roles[][] townRoles = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
+    RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
+
+//    WerewolfRole werewolfRoles = new WerewolfRole("evil");
+//    NeutralRole neutralRoles = new NeutralRole("neutral");
 
     public Game(boolean useApocalypse){
         this.useApocalypse = useApocalypse;
@@ -33,18 +36,14 @@ public class Game {
         this.townAmount = townAmount;
     }
 
-    private ArrayList<String> generateRandomTown(int amount){
-        ArrayList<String> possibleRoles = townRoles.getTownInvestigativeList();
-        possibleRoles.addAll(townRoles.getTownProtectiveList());
-        possibleRoles.addAll(townRoles.getTownNegativeList());
-        possibleRoles.addAll(townRoles.getTownKillingList());
-
-        ArrayList<String> theseTownRoles = new ArrayList<>();
+    private ArrayList<Roles> generateRandomTown(int amount){
+        ArrayList<Roles> possibleRoles = Arrays.asList(townRoles);
+        ArrayList<Roles> theseTownRoles = new ArrayList<>();
 
         for(int i=0; i<amount; i++){
-            int randomNumber = (int) (Math.random() * possibleRoles.size());
-            theseTownRoles.add(possibleRoles.get(randomNumber));
-            possibleRoles.remove(randomNumber);
+            int randomTownList = (int) (Math.random() * townRoles.length);
+            int randomTown = (int) (Math.random() * townRoles[randomTownList].length);
+            theseTownRoles.add(townRoles[randomTownList][randomTown]);
         }
 
         return theseTownRoles;
