@@ -15,9 +15,14 @@ public class Main {
         test.addPlayer("Aoibheann");
         test.addPlayer("Cockmaster");
 
-        test.setWerewolfRatio(4);
-        test.setNeutralRatio(3);
-        test.setTownRatio(2);
+        //there is an issue if you set ratios larger than the player size but I dont want to fix that right now
+        test.setWerewolfRatio(2);
+        test.setNeutralRatio(2);
+        test.setTownRatio(5);
+        test.setTownProtectiveRatio(4);
+        test.setTownInvestigativeRatio(1);
+        test.setTownNegativeRatio(0);
+        test.setTownKillingRatio(0);
 
         test.makeRandomRoles();
 
@@ -27,15 +32,15 @@ public class Main {
 
         System.out.println();
 
-        test.setWerewolfRatio(2);
-        test.setNeutralRatio(0);
-        test.setTownRatio(1);
-
-        test.makeRandomRoles();
-
-        for(int i=0; i<test.getGameRoles().size(); i++){
-            System.out.println(test.getPlayers().get(i) + ": " + test.getGameRoles().get(i));
-        }
+//        test.setWerewolfRatio(2);
+//        test.setNeutralRatio(0);
+//        test.setTownRatio(1);
+//
+//        test.makeRandomRoles();
+//
+//        for(int i=0; i<test.getGameRoles().size(); i++){
+//            System.out.println(test.getPlayers().get(i) + ": " + test.getGameRoles().get(i));
+//        }
 
     }
 }
