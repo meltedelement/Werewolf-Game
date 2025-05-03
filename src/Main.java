@@ -3,7 +3,9 @@ public class Main {
         Game test = new Game(true);
 
         test.addPlayer("Yasmin");
+        test.addPlayer("Sarah");
         test.addPlayer("Jame");
+        test.addPlayer("Aaron");
         test.addPlayer("April");
         test.addPlayer("Skye");
         test.addPlayer("Ciaran");
@@ -11,7 +13,7 @@ public class Main {
         test.addPlayer("Holly");
         test.addPlayer("David");
         test.addPlayer("Aoibheann");
-        test.addPlayer("Eoin");
+        test.addPlayer("Cockmaster");
 
         test.setWerewolfRatio(4);
         test.setNeutralRatio(3);
@@ -25,7 +27,7 @@ public class Main {
 
         System.out.println();
 
-        test.setWerewolfRatio(1);
+        test.setWerewolfRatio(2);
         test.setNeutralRatio(0);
         test.setTownRatio(1);
 
