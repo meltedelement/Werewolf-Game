@@ -9,8 +9,16 @@ export default function Index() {
     <View style={styles.container}>
       <Text style={styles.title}>Development Menu</Text>
       <Button
-        title="Go to Phase Screen"
-        onPress={() => navigation.navigate("phase")}
+        title="Go to Choice Screen"
+        onPress={() => navigation.navigate("choice")}
+      />
+      <Button
+        title="Go to Result Screen"
+        onPress={() =>
+          navigation.navigate("result", {
+            message: "Text result to print!\nPlayer is evil",
+          })
+        }
       />
       {/* Add more buttons here for other screens as needed */}
     </View>

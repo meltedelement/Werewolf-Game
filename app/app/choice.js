@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Phase() {
+export default function Choice() {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   // Placeholder data for now
