@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 public class NeutralRole extends Role{
-    private ArrayList<String> neutralApocalypse;
-    private ArrayList<String> neutralBenign;
+    private final ArrayList<String> neutralApocalypse;
+    private final ArrayList<String> neutralBenign;
+
     public NeutralRole(String name) {
 
         super(name);
+        this.neutralApocalypse = new ArrayList<>();
+        this.neutralBenign = new ArrayList<>();
+
         makeNeutralApocalypse();
         makeNeutralBenign();
     }
@@ -23,5 +27,13 @@ public class NeutralRole extends Role{
         neutralBenign.add("Doppelganger");
         neutralBenign.add("Executioner");
 
+    }
+
+    public ArrayList<String> getNeutralApocalypse() {
+        return neutralApocalypse;
+    }
+
+    public ArrayList<String> getNeutralBenign() {
+        return neutralBenign;
     }
 }
