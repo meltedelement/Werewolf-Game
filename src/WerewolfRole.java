@@ -6,7 +6,7 @@ public class WerewolfRole extends Role{
 
         super(name);
     }
-    public void makeWerewolfList()
+    private void makeWerewolfList()
     {
         werewolfList.add("Werewolf");
         werewolfList.add("Hexwolf");
