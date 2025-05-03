@@ -1,27 +1,40 @@
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Game {
-
-    //have a list of possible roles
-    //classes for town, neutral, and werewolf
-    private ArrayList<String> players;
-    private final boolean useApocalypse;
-
     public static final Roles[][] TOWN_ROLES = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
-    RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
+            RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
+
+    private ArrayList<String> players;
+    private boolean useApocalypse;
+    private int townRatio;
+    private int neutralRatio;
+    private int werewolfRatio;
 
     public Roles[][] neutralRoles;
 
     public Game(boolean useApocalypse){
         this.useApocalypse = useApocalypse;
+
         if(useApocalypse){
             this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_APOCALYPSE_ROLES, RoleList.NEUTRAL_BENIGN_ROLES};
         }else{
             this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_BENIGN_ROLES};
         }
         this.players = new ArrayList<>();
+
+    }
+
+    private void roleRatio(int playerAmount){
+        //1 werewolf for every 5 people
+        //1 neutral for every 8 people
+        werewolfRatio = (int) Math.ceil((double) playerAmount / 5);
+        neutralRatio = (int) Math.ceil((double) playerAmount / 8);
+        townRatio = playerAmount - werewolfRatio - neutralRatio;
+    }
+
+    public void setUseApocalypse(boolean useApocalypse) {
+        this.useApocalypse = useApocalypse;
     }
 
     private ArrayList<Roles> generateRandomTown(int amount){
