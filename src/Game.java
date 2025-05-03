@@ -19,7 +19,7 @@ public class Game {
     private int werewolfRatio;
     private int townProtectiveRatio;
     private int townKillingRatio;
-    private int townNeutralRatio;
+    private int townNegativeRatio;
     private int townInvestigativeRatio;
 
     public Game(boolean useApocalypse){
@@ -39,14 +39,17 @@ public class Game {
         //1 werewolf for every 5 people
         //1 neutral for every 8 people
         //1 villager for every 6 people
-        werewolfRatio = (int) Math.ceil((double) playerAmount / 5);
-        neutralRatio = (int) Math.ceil((double) playerAmount / 8);
+        werewolfRatio = (int) Math.min(Math.ceil((double) playerAmount / 5), RoleList.WEREWOLF_ROLES.length);
+        neutralRatio = (int) Math.min(Math.ceil((double) playerAmount / 8), NEUTRAL_ROLES.length);
         int villagerAmount = (int) Math.ceil((double) playerAmount / 6);
         townRatio = playerAmount - werewolfRatio - neutralRatio - villagerAmount;
     }
 
     private void standardTownRatios(int townAmount){
-
+        townProtectiveRatio = (int) Math.min(Math.ceil((double) townAmount / 4), RoleList.TOWN_PROTECTIVE_ROLES.length);
+        townInvestigativeRatio = (int) Math.min(Math.ceil((double) townAmount / 4), RoleList.TOWN_INVESTIGATIVE_ROLES.length);
+        townKillingRatio = (int) Math.min(Math.ceil((double) townAmount / 5), RoleList.TOWN_KILLING_ROLES.length);
+        townNegativeRatio = (int) Math.min(Math.ceil((double) townAmount / 5), RoleList.TOWN_NEGATIVE_ROLES.length);
     }
 
     public void makeRandomRoles(){
@@ -139,7 +142,7 @@ public class Game {
     }
 
     public void setWerewolfRatio(int werewolfRatio) {
-        this.werewolfRatio = werewolfRatio;
+        this.werewolfRatio = Math.min(werewolfRatio, RoleList.WEREWOLF_ROLES.length);
     }
 
     public void setTownRatio(int townRatio) {
@@ -147,6 +150,10 @@ public class Game {
     }
 
     public void setNeutralRatio(int neutralRatio) {
-        this.neutralRatio = neutralRatio;
+        int neutralLength =0;
+        for (Roles[] neutralRole : NEUTRAL_ROLES) {
+            neutralLength += neutralRole.length;
+        }
+        this.neutralRatio = Math.min(neutralRatio, neutralLength);
     }
 }

@@ -15,8 +15,8 @@ public class Main {
         test.addPlayer("Aoibheann");
         test.addPlayer("Cockmaster");
 
-        test.setWerewolfRatio(4);
-        test.setNeutralRatio(3);
+        test.setWerewolfRatio(2);
+        test.setNeutralRatio(40);
         test.setTownRatio(2);
 
         test.makeRandomRoles();
@@ -27,15 +27,15 @@ public class Main {
 
         System.out.println();
 
-        test.setWerewolfRatio(2);
-        test.setNeutralRatio(0);
-        test.setTownRatio(1);
-
-        test.makeRandomRoles();
-
-        for(int i=0; i<test.getGameRoles().size(); i++){
-            System.out.println(test.getPlayers().get(i) + ": " + test.getGameRoles().get(i));
-        }
+//        test.setWerewolfRatio(2);
+//        test.setNeutralRatio(0);
+//        test.setTownRatio(1);
+//
+//        test.makeRandomRoles();
+//
+//        for(int i=0; i<test.getGameRoles().size(); i++){
+//            System.out.println(test.getPlayers().get(i) + ": " + test.getGameRoles().get(i));
+//        }
 
     }
 }
