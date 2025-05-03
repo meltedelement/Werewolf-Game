@@ -7,7 +7,7 @@ public class Game {
     //have a list of possible roles
     //classes for town, neutral, and werewolf
     private ArrayList<String> players;
-    private final boolean useApocalypse;
+    private boolean useApocalypse;
 
     public static final Roles[][] TOWN_ROLES = {RoleList.TOWN_INVESTIGATIVE_ROLES, RoleList.TOWN_NEGATIVE_ROLES,
     RoleList.TOWN_KILLING_ROLES, RoleList.TOWN_PROTECTIVE_ROLES};
@@ -16,12 +16,17 @@ public class Game {
 
     public Game(boolean useApocalypse){
         this.useApocalypse = useApocalypse;
+
         if(useApocalypse){
             this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_APOCALYPSE_ROLES, RoleList.NEUTRAL_BENIGN_ROLES};
         }else{
             this.neutralRoles = new Roles[][]{RoleList.NEUTRAL_BENIGN_ROLES};
         }
         this.players = new ArrayList<>();
+    }
+
+    public void setUseApocalypse(boolean useApocalypse) {
+        this.useApocalypse = useApocalypse;
     }
 
     private ArrayList<Roles> generateRandomTown(int amount){
