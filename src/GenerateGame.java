@@ -28,12 +28,18 @@ public class GenerateGame {
         this.townAmount = townAmount;
     }
 
-    public ArrayList<String> generateRandomTown(){
-        ArrayList<String> ti = roles.getTownInvestigativeList();
-        ArrayList<String> tp = roles.getTownProtectiveList();
-        ArrayList<String> tn = roles.getTownNegativeList();
-        ArrayList<String> tk = roles.getTownKillingList();
+    public ArrayList<String> generateRandomTown(int amount){
+        ArrayList<String> possibleRoles = roles.getTownInvestigativeList();
+        possibleRoles.addAll(roles.getTownProtectiveList());
+        possibleRoles.addAll(roles.getTownNegativeList());
+        possibleRoles.addAll(roles.getTownKillingList());
 
+        ArrayList<String> townRoles = new ArrayList<>();
 
+        for(int i=0; i<amount; i++){
+            int randomNumber = (int) (Math.random() * possibleRoles.size());
+        }
+
+        return townRoles;
     }
 }
