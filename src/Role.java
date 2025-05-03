@@ -1,4 +1,4 @@
-public class Role {
+public abstract class Role {
 
     String name;
 
