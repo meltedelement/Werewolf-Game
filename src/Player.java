@@ -1,6 +1,6 @@
 public class Player {
     public String name;
-    public Role role;
+    public Roles role;
     private boolean alive;
     private boolean isHexed;
     private boolean isDoused;
@@ -20,11 +20,11 @@ public class Player {
         return name;
     }
 
-    public void setRole(Role role) {
+    public void setroles(Roles role) {
         this.role = role;
     }
     
-    public Role getRole() {
+    public Roles getrole() {
         return role;
     }
 
