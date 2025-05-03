@@ -2,13 +2,17 @@ import java.util.ArrayList;
 
 public class TownRole extends Role{
 
-    private ArrayList<String> townInvestigativeList;
-    private ArrayList<String> townProtectiveList;
-    private ArrayList<String> townNegativeList;
-    private ArrayList<String> townKillingList;
+    private final ArrayList<String> townInvestigativeList;
+    private final ArrayList<String> townProtectiveList;
+    private final ArrayList<String> townNegativeList;
+    private final ArrayList<String> townKillingList;
 
     public TownRole(String name) {
         super(name);
+        this.townInvestigativeList = new ArrayList<>();
+        this.townKillingList = new ArrayList<>();
+        this.townNegativeList = new ArrayList<>();
+        this.townProtectiveList = new ArrayList<>();
         makeTownInvestigativeList();
         makeTownKillingList();
         makeTownProtectiveList();

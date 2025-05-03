@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class GenerateGame {
+public class Game {
 
     //have a list of possible roles
     //classes for town, neutral, and werewolf
@@ -11,7 +11,7 @@ public class GenerateGame {
 
     TownRole roles = new TownRole("town");
 
-    public GenerateGame(){
+    public Game(){
     }
 
     //be able to set the amounts of each and generate a random list based on those amounts
@@ -28,7 +28,7 @@ public class GenerateGame {
         this.townAmount = townAmount;
     }
 
-    public ArrayList<String> generateRandomTown(int amount){
+    private ArrayList<String> generateRandomTown(int amount){
         ArrayList<String> possibleRoles = roles.getTownInvestigativeList();
         possibleRoles.addAll(roles.getTownProtectiveList());
         possibleRoles.addAll(roles.getTownNegativeList());
@@ -38,8 +38,13 @@ public class GenerateGame {
 
         for(int i=0; i<amount; i++){
             int randomNumber = (int) (Math.random() * possibleRoles.size());
+            townRoles.add(possibleRoles.get(randomNumber));
         }
 
         return townRoles;
+    }
+
+    public ArrayList<String> getTownRoles(int amount){
+        return generateRandomTown(amount);
     }
 }
