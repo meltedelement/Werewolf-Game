@@ -8,7 +8,6 @@ public class Game {
     private final ArrayList<Player> players;
     ArrayList<Roles> gameRoles;
     private boolean useApocalypse;
-    private int villagerAmount;
     private int townRatio;
     private int neutralRatio;
     private int werewolfRatio;
@@ -32,17 +31,23 @@ public class Game {
         //1 neutral for every 8 people
         werewolfRatio = (int) Math.ceil((double) playerAmount / 5);
         neutralRatio = (int) Math.ceil((double) playerAmount / 8);
-        villagerAmount = (int) Math.ceil((double) playerAmount / 6);
+        int villagerAmount = (int) Math.ceil((double) playerAmount / 6);
         townRatio = playerAmount - werewolfRatio - neutralRatio - villagerAmount;
     }
 
     public void makeRandomRoles(){
-        standardRoleRatio(players.size());
+        gameRoles.clear();
 
+        if(werewolfRatio == 0 && townRatio == 0 && neutralRatio == 0){
+            standardRoleRatio(players.size());
+        }
         gameRoles.addAll(generateRandomWerewolf(werewolfRatio));
         gameRoles.addAll(generateRandomNeutral(neutralRatio));
         gameRoles.addAll(generateRandomTown(townRatio));
-        for(int i=0; i<villagerAmount; i++){
+
+        int villageNumber = players.size() - gameRoles.size();
+
+        for(int i=0; i<villageNumber; i++){
             gameRoles.add(Roles.Villager);
         }
     }
@@ -121,5 +126,17 @@ public class Game {
 
     public ArrayList<Roles> getGameRoles() {
         return gameRoles;
+    }
+
+    public void setWerewolfRatio(int werewolfRatio) {
+        this.werewolfRatio = werewolfRatio;
+    }
+
+    public void setTownRatio(int townRatio) {
+        this.townRatio = townRatio;
+    }
+
+    public void setNeutralRatio(int neutralRatio) {
+        this.neutralRatio = neutralRatio;
     }
 }
