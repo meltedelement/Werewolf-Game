@@ -15,9 +15,14 @@ public class Main {
         test.addPlayer("Aoibheann");
         test.addPlayer("Cockmaster");
 
+        //there is an issue if you set ratios larger than the player size but I dont want to fix that right now
         test.setWerewolfRatio(2);
-        test.setNeutralRatio(40);
-        test.setTownRatio(2);
+        test.setNeutralRatio(2);
+        test.setTownRatio(5);
+        test.setTownProtectiveRatio(4);
+        test.setTownInvestigativeRatio(1);
+        test.setTownNegativeRatio(0);
+        test.setTownKillingRatio(0);
 
         test.makeRandomRoles();
 
