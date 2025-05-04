@@ -1,13 +1,24 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View, Button } from "react-native";
+import useWebSocket from "./hooks/useWebSocket";
 
 export default function Result({ message }) {
+  const { messages, sendMessage } = useWebSocket("ws://192.168.64.94/24:8080"); // Replace with your backend WebSocket URL
+
+  useEffect(() => {
+    console.log("Received messages:", messages);
+  }, [messages]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>RESULT:</Text>
       <View style={styles.resultBox}>
         <Text style={styles.resultText}>{message}</Text>
       </View>
+      <Button
+        title="Send Test Message"
+        onPress={() => sendMessage("Hello from React!")}
+      />
     </View>
   );
 }
