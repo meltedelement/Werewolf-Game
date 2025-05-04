@@ -44,7 +44,7 @@ public class NightActions {
                 break;
 
             case Witch:
-                // Action for Witch
+                witchAction(players[0], 2);
                 break;
 
             case Escort:
@@ -160,5 +160,14 @@ public class NightActions {
 
     private void bodyGuardAction(Player targetPlayer){
         targetPlayer.setProtected(true);
+    }
+
+    private void witchAction(Player targetPlayer, int option){
+        if(option == 1){
+            targetPlayer.setProtected(true);
+        }
+        else{
+            targetPlayer.kill(); //KILLL!!!!!!!
+        }
     }
 }
