@@ -161,4 +161,8 @@ public class NightActions {
     private void bodyGuardAction(Player targetPlayer){
         targetPlayer.setProtected(true);
     }
+
+    private void witchAction(Player targetPlayer, int option){
+
+    }
 }
