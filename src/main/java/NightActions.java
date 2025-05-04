@@ -163,6 +163,11 @@ public class NightActions {
     }
 
     private void witchAction(Player targetPlayer, int option){
-
+        if(option == 1){
+            targetPlayer.setProtected(true);
+        }
+        else{
+            targetPlayer.kill(); //KILLL!!!!!!!
+        }
     }
 }
