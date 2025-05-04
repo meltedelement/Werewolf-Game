@@ -27,12 +27,4 @@ public class RoleList{
     public static final Roles[] NEUTRAL_APOCALYPSE_ROLES = {
         Roles.Arsonist, Roles.Serial_Killer, Roles.Pestilence, Roles.Grave_Digger, Roles.Doom_sayer
     };
-
-    public static final Roles[][] TOWN_ROLES = {
-            TOWN_PROTECTIVE_ROLES, TOWN_INVESTIGATIVE_ROLES, TOWN_KILLING_ROLES, TOWN_NEGATIVE_ROLES
-    };
-
-    public static final Roles[][] NEUTRAL_ROLES = {
-            NEUTRAL_BENIGN_ROLES, NEUTRAL_APOCALYPSE_ROLES
-    };
 }

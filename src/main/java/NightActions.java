@@ -1,14 +1,16 @@
-import java.util.Arrays;
-
 public class NightActions {
-    public void performNightAction(Roles role, Player[] players) {
+    public void performNightAction(Roles role) {
 
         switch (role) {
             case Villager:
                 break;
 
             case Seer:
-                seerAction(players[0]);
+                // Action for Seer
+                break;
+
+            case Apprentice_Seer:
+                // Action for Apprentice Seer
                 break;
 
             case Aura_Seer:
@@ -40,11 +42,11 @@ public class NightActions {
                 break;
 
             case Bodyguard:
-                bodyGuardAction(players[0]);
+                // Action for Bodyguard
                 break;
 
             case Witch:
-                witchAction(players[0], 2);
+                // Action for Witch
                 break;
 
             case Escort:
@@ -141,33 +143,6 @@ public class NightActions {
 
             default:
                 throw new IllegalArgumentException("Unknown role: " + role);
-        }
-    }
-
-    private void seerAction(Player targetPlayer) {
-        Roles role = targetPlayer.getrole();
-
-        if(Arrays.asList(RoleList.TOWN_PROTECTIVE_ROLES).contains(role) ||
-                Arrays.asList(RoleList.TOWN_NEGATIVE_ROLES).contains(role) ||
-                Arrays.asList(RoleList.TOWN_KILLING_ROLES).contains(role) ||
-                Arrays.asList(RoleList.TOWN_INVESTIGATIVE_ROLES).contains(role)){
-            System.out.println("thumbs up");
-        }
-        else{
-            System.out.println("thumbs down");
-        }
-    }
-
-    private void bodyGuardAction(Player targetPlayer){
-        targetPlayer.setProtected(true);
-    }
-
-    private void witchAction(Player targetPlayer, int option){
-        if(option == 1){
-            targetPlayer.setProtected(true);
-        }
-        else{
-            targetPlayer.kill(); //KILLL!!!!!!!
         }
     }
 }

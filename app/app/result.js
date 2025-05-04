@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import useWebSocket from "./hooks/useWebSocket";
 
 export default function Result({ message }) {
-  const { messages, sendMessage } = useWebSocket("ws://192.168.64.94/24:8080"); // Replace with your backend WebSocket URL
+  const { messages, sendMessage } = useWebSocket("ws://192.168.64.94:8080"); // Replace with your backend WebSocket URL
 
   useEffect(() => {
     console.log("Received messages:", messages);

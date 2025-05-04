@@ -47,7 +47,7 @@ public class LocalWebSocketServer extends WebSocketServer {
         //Roles role = Roles.valueOf(message);
         //new NightActions().performNightAction(role);
         //return "Action performed for role: " + role;
-        return "s";
+        return "none";
     }
 
     public static void main(String[] args) {
