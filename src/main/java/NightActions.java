@@ -44,7 +44,7 @@ public class NightActions {
                 break;
 
             case Witch:
-                // Action for Witch
+                witchAction(players[0], 2);
                 break;
 
             case Escort:
