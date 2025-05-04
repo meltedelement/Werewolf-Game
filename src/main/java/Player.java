@@ -6,6 +6,7 @@ public class Player {
     private boolean isDoused;
     private boolean isInfected;
     private boolean attacked;
+    private boolean isProtected;
 
     public Player(String name) {
         this.name = name;
@@ -13,6 +14,7 @@ public class Player {
         this.isHexed = false;
         this.isDoused = false;
         this.isInfected = false;
+        this.isProtected = false;
     }
 
     @Override
@@ -28,6 +30,13 @@ public class Player {
         return role;
     }
 
+    public void setProtected(boolean aProtected) {
+        isProtected = aProtected;
+    }
+
+    public boolean getProtected(){
+        return this.isProtected;
+    }
 
     public void attack(){
         attacked = true;
