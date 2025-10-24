@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { gameAPI } from "../services/api";
 
 export default function Choice() {
   const [selectedOptions, setSelectedOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const params = useLocalSearchParams();
 
-  // Placeholder data for now
-  const playerRole = "Sarah - Werewolf"; // This will be dynamically passed later
-  const playerList = ["James", "Anna", "Ciaran", "Yasmin", "April", "Skye"];
-  const optionsNeeded = 2; // This will also be dynamically passed later
+  // Get data from navigation params or use placeholder
+  const gameId = params.gameId || "test-game";
+  const playerRole = params.playerRole || "Sarah - Werewolf";
+  const playerList = params.playerList ? JSON.parse(params.playerList) : ["James", "Anna", "Ciaran", "Yasmin", "April", "Skye"];
+  const optionsNeeded = params.optionsNeeded ? parseInt(params.optionsNeeded) : 2;
 
   const handleOptionToggle = (player) => {
     if (selectedOptions.includes(player)) {
@@ -17,11 +23,48 @@ export default function Choice() {
     }
   };
 
-  const handleSubmit = () => {
-    if (selectedOptions.length === optionsNeeded) {
-      Alert.alert("Selection Submitted", `You selected: ${selectedOptions.join(", ")}`);
-    } else {
+  const handleSubmit = async () => {
+    if (selectedOptions.length !== optionsNeeded) {
       Alert.alert("Invalid Selection", `Please select exactly ${optionsNeeded} options.`);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Extract role from playerRole string (e.g., "Sarah - Werewolf" -> "WEREWOLF")
+      const role = playerRole.split(" - ")[1]?.toUpperCase() || "WEREWOLF";
+
+      // Call API to perform night action
+      const response = await gameAPI.performNightAction(gameId, role, selectedOptions);
+
+      if (response.success) {
+        Alert.alert(
+          "Action Submitted",
+          `You selected: ${selectedOptions.join(", ")}\n\n${response.message}`,
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                // Navigate to result screen with the response
+                router.push({
+                  pathname: "/result",
+                  params: {
+                    gameId: gameId,
+                    result: response.result || "Action completed successfully"
+                  }
+                });
+              }
+            }
+          ]
+        );
+      } else {
+        Alert.alert("Error", response.message || "Failed to submit action");
+      }
+    } catch (error) {
+      console.error("Failed to submit action:", error);
+      Alert.alert("Error", `Failed to submit action: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,8 +93,16 @@ export default function Choice() {
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit</Text>
+      <TouchableOpacity
+        style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.submitButtonText}>Submit</Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -100,6 +151,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#007bff",
     borderRadius: 5,
     alignItems: "center",
+  },
+  submitButtonDisabled: {
+    backgroundColor: "#6c757d",
   },
   submitButtonText: {
     color: "#fff",

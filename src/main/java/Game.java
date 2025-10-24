@@ -14,17 +14,7 @@ public class Game {
     private final ArrayList<Player> PLAYERS;
     private final ArrayList<Roles> gameRoles;
 
-    private boolean useStandardTownRatios;
-    private int townRatio;
-    private int neutralRatio;
-    private int werewolfRatio;
-    private int townProtectiveRatio;
-    private int townKillingRatio;
-    private int townNegativeRatio;
-    private int townInvestigativeRatio;
-
     public Game(boolean useApocalypse) {
-        this.useStandardTownRatios = true;
         this.PLAYERS = new ArrayList<>();
         this.gameRoles = new ArrayList<>();
 
@@ -33,37 +23,25 @@ public class Game {
                 : new Roles[][]{RoleList.NEUTRAL_BENIGN_ROLES};
     }
 
-    private void standardRoleRatio(int playerCount) {
-        werewolfRatio = Math.min((int) Math.ceil(playerCount / 5.0), RoleList.WEREWOLF_ROLES.length);
-        neutralRatio = Math.min((int) Math.ceil(playerCount / 8.0), totalNeutralRoles());
-        int villagerCount = (int) Math.ceil(playerCount / 6.0);
-        townRatio = playerCount - werewolfRatio - neutralRatio - villagerCount;
-    }
-
-    private void standardTownRatios(int townAmount) {
-        townProtectiveRatio = Math.min((int) Math.ceil(townAmount / 4.0), RoleList.TOWN_PROTECTIVE_ROLES.length);
-        townInvestigativeRatio = Math.min((int) Math.ceil(townAmount / 4.0), RoleList.TOWN_INVESTIGATIVE_ROLES.length);
-        townKillingRatio = Math.min((int) Math.ceil(townAmount / 5.0), RoleList.TOWN_KILLING_ROLES.length);
-        townNegativeRatio = Math.min((int) Math.ceil(townAmount / 5.0), RoleList.TOWN_NEGATIVE_ROLES.length);
-    }
-
     public void makeRandomRoles() {
         gameRoles.clear();
 
-        if (werewolfRatio == 0 && townRatio == 0 && neutralRatio == 0) {
-            standardRoleRatio(PLAYERS.size());
-        }
+        int playerCount = PLAYERS.size();
 
-        if(useStandardTownRatios){
-            standardTownRatios(townRatio);
-        }
+        // Simple default role distribution
+        int werewolfCount = Math.min((int) Math.ceil(playerCount / 5.0), RoleList.WEREWOLF_ROLES.length);
+        int neutralCount = Math.min((int) Math.ceil(playerCount / 8.0), totalNeutralRoles());
+        int villagerCount = (int) Math.ceil(playerCount / 6.0);
+        int townCount = playerCount - werewolfCount - neutralCount - villagerCount;
 
-        gameRoles.addAll(generateRandomWerewolf(werewolfRatio));
-        gameRoles.addAll(generateRandomNeutral(neutralRatio));
-        gameRoles.addAll(generateRandomTown());
+        // Generate roles
+        gameRoles.addAll(generateRandomWerewolf(werewolfCount));
+        gameRoles.addAll(generateRandomNeutral(neutralCount));
+        gameRoles.addAll(generateRandomTown(townCount));
 
-        int villagerCount = PLAYERS.size() - gameRoles.size();
-        for (int i = 0; i < villagerCount; i++) {
+        // Fill remaining with villagers
+        int remainingVillagers = PLAYERS.size() - gameRoles.size();
+        for (int i = 0; i < remainingVillagers; i++) {
             gameRoles.add(Roles.Villager);
         }
     }
@@ -72,15 +50,13 @@ public class Game {
         PLAYERS.add(new Player(name));
     }
 
-    private ArrayList<Roles> generateRandomTown() {
-        ArrayList<Roles> selectedRoles = new ArrayList<>();
+    private ArrayList<Roles> generateRandomTown(int amount) {
+        ArrayList<Roles> available = new ArrayList<>();
+        for (Roles[] group : TOWN_ROLES) {
+            available.addAll(Arrays.asList(group));
+        }
 
-        selectedRoles.addAll(pickRandomUniqueRoles(new ArrayList<>(Arrays.asList(RoleList.TOWN_PROTECTIVE_ROLES)), townProtectiveRatio));
-        selectedRoles.addAll(pickRandomUniqueRoles(new ArrayList<>(Arrays.asList(RoleList.TOWN_INVESTIGATIVE_ROLES)), townInvestigativeRatio));
-        selectedRoles.addAll(pickRandomUniqueRoles(new ArrayList<>(Arrays.asList(RoleList.TOWN_KILLING_ROLES)), townKillingRatio));
-        selectedRoles.addAll(pickRandomUniqueRoles(new ArrayList<>(Arrays.asList(RoleList.TOWN_NEGATIVE_ROLES)), townNegativeRatio));
-
-        return selectedRoles;
+        return pickRandomUniqueRoles(available, amount);
     }
 
     private ArrayList<Roles> generateRandomNeutral(int amount) {
@@ -120,39 +96,6 @@ public class Game {
 
     public ArrayList<Roles> getGameRoles() {
         return gameRoles;
-    }
-
-    // Setters (with role pool size protection)
-    public void setWerewolfRatio(int werewolfRatio) {
-        this.werewolfRatio = Math.min(werewolfRatio, RoleList.WEREWOLF_ROLES.length);
-    }
-
-    public void setTownRatio(int townRatio) {
-        this.townRatio = townRatio;
-    }
-
-    public void setNeutralRatio(int neutralRatio) {
-        this.neutralRatio = Math.min(neutralRatio, totalNeutralRoles());
-    }
-
-    public void setTownProtectiveRatio(int townProtectiveRatio) {
-        this.townProtectiveRatio = Math.min(townProtectiveRatio, Math.min(RoleList.TOWN_PROTECTIVE_ROLES.length, townRatio));
-        this.useStandardTownRatios = false;
-    }
-
-    public void setTownInvestigativeRatio(int townInvestigativeRatio) {
-        this.townInvestigativeRatio = Math.min(townInvestigativeRatio, Math.min(RoleList.TOWN_INVESTIGATIVE_ROLES.length, townRatio));
-        this.useStandardTownRatios = false;
-    }
-
-    public void setTownKillingRatio(int townKillingRatio) {
-        this.townKillingRatio = Math.min(townKillingRatio, Math.min(RoleList.TOWN_KILLING_ROLES.length, townRatio));
-        this.useStandardTownRatios = false;
-    }
-
-    public void setTownNegativeRatio(int townNegativeRatio) {
-        this.townNegativeRatio = Math.min(townNegativeRatio, Math.min(RoleList.TOWN_NEGATIVE_ROLES.length, townRatio));
-        this.useStandardTownRatios = false;
     }
 
 }
