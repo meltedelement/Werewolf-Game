@@ -31,8 +31,8 @@ export default function Choice() {
 
     setLoading(true);
     try {
-      // Extract role from playerRole string (e.g., "Sarah - Werewolf" -> "WEREWOLF")
-      const role = playerRole.split(" - ")[1]?.toUpperCase() || "WEREWOLF";
+      // Extract role from playerRole string (e.g., "Sarah - Werewolf" -> "Werewolf")
+      const role = playerRole.split(" - ")[1] || "Werewolf";
 
       // Call API to perform night action
       const response = await gameAPI.performNightAction(gameId, role, selectedOptions);

@@ -16,6 +16,18 @@ public class RoleList{
         Roles.Deputy, Roles.Hunter, Roles.Vigilante, Roles.Veteran
     };
 
+    // All town roles (excluding Villager) - for random Town category
+    public static final Roles[] TOWN_ROLES = {
+        // Town Investigative
+        Roles.Seer, Roles.Aura_Seer, Roles.Private_Investigator, Roles.Tracker, Roles.Clockmaker,
+        // Town Protective
+        Roles.Bodyguard, Roles.Trickster, Roles.Escort, Roles.Witch,
+        // Town Negative
+        Roles.Cupid, Roles.Lycan, Roles.Cursed,
+        // Town Killing
+        Roles.Deputy, Roles.Hunter, Roles.Vigilante, Roles.Veteran
+    };
+
     public static final Roles[] WEREWOLF_ROLES = {
         Roles.Werewolf, Roles.Cubwolf, Roles.Mistwolf, Roles.Hexwolf, Roles.Sorceror, Roles.Consort
     };

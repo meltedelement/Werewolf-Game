@@ -33,14 +33,44 @@ public class GameController {
 
             // Get the gameRoles list from the game object
             java.lang.reflect.Method getGameRoles = gameClass.getMethod("getGameRoles");
-            ArrayList<?> gameRoles = (ArrayList<?>) getGameRoles.invoke(game);
+            @SuppressWarnings("unchecked")
+            ArrayList<Object> gameRoles = (ArrayList<Object>) getGameRoles.invoke(game);
 
             // Convert role strings to Roles enum and add to game
             Class<?> rolesClass = Class.forName("Roles");
-            if (request.getRoleList() != null && !request.getRoleList().isEmpty()) {
-                // Use provided role list
+
+            // Check for new format (roleListItems) first, then fall back to old format
+            if (request.getRoleListItems() != null && !request.getRoleListItems().isEmpty()) {
+                // Use new format with support for categories
+                for (werewolf.dto.RoleListItem item : request.getRoleListItems()) {
+                    int count = item.getCount() != null ? item.getCount() : 1;
+
+                    for (int i = 0; i < count; i++) {
+                        if ("CATEGORY".equals(item.getType())) {
+                            // Resolve category to a random role
+                            Object randomRole = getRandomRoleFromCategory(item.getValue());
+                            gameRoles.add(randomRole);
+                        } else {
+                            // Specific role
+                            Object roleEnum;
+                            try {
+                                roleEnum = Enum.valueOf((Class<Enum>) rolesClass, item.getValue());
+                            } catch (IllegalArgumentException e) {
+                                roleEnum = findRoleByName(rolesClass, item.getValue());
+                            }
+                            gameRoles.add(roleEnum);
+                        }
+                    }
+                }
+            } else if (request.getRoleList() != null && !request.getRoleList().isEmpty()) {
+                // Use old format (deprecated) for backward compatibility
                 for (String roleName : request.getRoleList()) {
-                    Object roleEnum = Enum.valueOf((Class<Enum>) rolesClass, roleName);
+                    Object roleEnum;
+                    try {
+                        roleEnum = Enum.valueOf((Class<Enum>) rolesClass, roleName);
+                    } catch (IllegalArgumentException e) {
+                        roleEnum = findRoleByName(rolesClass, roleName);
+                    }
                     gameRoles.add(roleEnum);
                 }
             } else {
@@ -149,6 +179,45 @@ public class GameController {
 
         } catch (Exception e) {
             return new NightActionResponse(false, "Failed to perform night action: " + e.getMessage(), null);
+        }
+    }
+
+    // Helper method to find role by name (case-insensitive)
+    private Object findRoleByName(Class<?> rolesClass, String roleName) throws Exception {
+        // Get all enum constants
+        Object[] enumConstants = rolesClass.getEnumConstants();
+
+        // Try case-insensitive match
+        for (Object enumConstant : enumConstants) {
+            if (enumConstant.toString().equalsIgnoreCase(roleName)) {
+                return enumConstant;
+            }
+        }
+
+        // If not found, throw exception
+        throw new IllegalArgumentException("No role found matching: " + roleName);
+    }
+
+    // Helper method to get a random role from a category
+    private Object getRandomRoleFromCategory(String categoryName) throws Exception {
+        Class<?> roleListClass = Class.forName("RoleList");
+        java.util.Random random = new java.util.Random();
+
+        // Map category name to the appropriate field in RoleList
+        String fieldName = categoryName + "_ROLES";
+
+        try {
+            java.lang.reflect.Field field = roleListClass.getField(fieldName);
+            Object[] roles = (Object[]) field.get(null);
+
+            if (roles.length == 0) {
+                throw new IllegalArgumentException("Category " + categoryName + " has no roles");
+            }
+
+            // Return a random role from the category
+            return roles[random.nextInt(roles.length)];
+        } catch (NoSuchFieldException e) {
+            throw new IllegalArgumentException("Unknown category: " + categoryName);
         }
     }
 
