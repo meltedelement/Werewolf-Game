@@ -8,10 +8,11 @@ import {
   TextInput,
   ActivityIndicator,
   Modal,
+  Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { roleListAPI } from "../../services/api";
-import { ROLE_CATEGORIES, ROLE_CATEGORY_MAPPINGS } from "../../constants/roleCategories";
+import { ROLE_CATEGORIES, ROLE_CATEGORY_MAPPINGS, formatCategoryForDisplay } from "../../constants/roleCategories";
 
 export default function RoleEditor() {
   const router = useRouter();
@@ -39,14 +40,22 @@ export default function RoleEditor() {
 
   const loadAvailableOptions = async () => {
     try {
+      console.log('[RoleEditor] Loading available roles and categories...');
       const [rolesData, categoriesData] = await Promise.all([
         roleListAPI.getRoles(),
         roleListAPI.getCategories(),
       ]);
-      setAvailableRoles(rolesData.roles);
-      setAvailableCategories(categoriesData.categories);
+      console.log('[RoleEditor] Loaded roles:', rolesData.roles?.length || 0);
+      console.log('[RoleEditor] Loaded categories:', categoriesData.categories?.length || 0);
+      setAvailableRoles(rolesData.roles || []);
+      setAvailableCategories(categoriesData.categories || []);
     } catch (error) {
-      console.error("Error loading available options:", error);
+      console.error("[RoleEditor] Error loading available options:", error);
+      Alert.alert(
+        "Connection Error",
+        `Failed to load roles from server: ${error.message}\n\nMake sure the backend is running and your device is connected to the same network.`,
+        [{ text: "OK" }]
+      );
     }
   };
 
@@ -84,8 +93,36 @@ export default function RoleEditor() {
   };
 
   const addRole = (type, value) => {
-    const newRole = { type, value, count: 1 };
-    setRoles([...roles, newRole]);
+    // Check if this exact role (same type and value) already exists
+    const existingRoleIndex = roles.findIndex(
+      (r) => r.type === type && r.value === value
+    );
+
+    if (existingRoleIndex !== -1) {
+      // Role exists - only increment count for Villager or categories
+      const isVillager = type === "SPECIFIC" && value === "Villager";
+      const isCategory = type === "CATEGORY";
+
+      if (isVillager || isCategory) {
+        // Villager and categories can have multiple counts
+        const newRoles = [...roles];
+        newRoles[existingRoleIndex].count += 1;
+        setRoles(newRoles);
+      } else {
+        // Other roles cannot have duplicates
+        Alert.alert(
+          "Duplicate Role",
+          `${value.replace(/_/g, " ")} already exists in the role list. Only Villager can have duplicates.`,
+          [{ text: "OK" }]
+        );
+        return; // Don't close modal or clear search
+      }
+    } else {
+      // Role doesn't exist - add it as new
+      const newRole = { type, value, count: 1 };
+      setRoles([...roles, newRole]);
+    }
+
     setShowRoleModal(false);
     setRoleSearchFilter("");
   };
@@ -96,13 +133,29 @@ export default function RoleEditor() {
 
   const updateRoleCount = (index, count) => {
     const newRoles = [...roles];
+    const role = newRoles[index];
+
+    // Check if this role can have duplicates
+    const isVillager = role.type === "SPECIFIC" && role.value === "Villager";
+    const isCategory = role.type === "CATEGORY";
+
+    if (!isVillager && !isCategory && count > 1) {
+      // Prevent count above 1 for non-Villager specific roles
+      Alert.alert(
+        "Invalid Count",
+        `${role.value.replace(/_/g, " ")} cannot have a count greater than 1. Only Villager can have duplicates.`,
+        [{ text: "OK" }]
+      );
+      return;
+    }
+
     newRoles[index].count = Math.max(1, count);
     setRoles(newRoles);
   };
 
   const getRoleDisplayName = (role) => {
     if (role.type === "CATEGORY") {
-      return `[${role.value}]`;
+      return `[${formatCategoryForDisplay(role.value)}]`;
     }
     return role.value.replace(/_/g, " ");
   };
@@ -119,7 +172,7 @@ export default function RoleEditor() {
     }, {});
 
     roles.forEach((role) => {
-      const category = ROLE_CATEGORY_MAPPINGS[role] || "Other";
+      const category = ROLE_CATEGORY_MAPPINGS[role] || "OTHER";
       categories[category].roles.push(role);
     });
 
@@ -198,38 +251,46 @@ export default function RoleEditor() {
               No roles added yet. Tap "Add Role" to get started.
             </Text>
           ) : (
-            roles.map((role, index) => (
-              <View key={index} style={styles.roleItem}>
-                <View style={styles.roleInfo}>
-                  <Text style={styles.roleName}>{getRoleDisplayName(role)}</Text>
-                  <Text style={styles.roleType}>
-                    {role.type === "CATEGORY" ? "Random" : "Specific"}
-                  </Text>
+            roles.map((role, index) => {
+              // Check if this role can have duplicates
+              const isVillager = role.type === "SPECIFIC" && role.value === "Villager";
+              const isCategory = role.type === "CATEGORY";
+              const canIncrement = isVillager || isCategory;
+
+              return (
+                <View key={index} style={styles.roleItem}>
+                  <View style={styles.roleInfo}>
+                    <Text style={styles.roleName}>{getRoleDisplayName(role)}</Text>
+                    <Text style={styles.roleType}>
+                      {role.type === "CATEGORY" ? "Random" : "Specific"}
+                    </Text>
+                  </View>
+                  <View style={styles.roleControls}>
+                    <TouchableOpacity
+                      onPress={() => updateRoleCount(index, role.count - 1)}
+                      style={[styles.countButton, role.count <= 1 && styles.countButtonDisabled]}
+                      disabled={role.count <= 1}
+                    >
+                      <Text style={styles.countButtonText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.countText}>{role.count}</Text>
+                    <TouchableOpacity
+                      onPress={() => updateRoleCount(index, role.count + 1)}
+                      style={[styles.countButton, !canIncrement && styles.countButtonDisabled]}
+                      disabled={!canIncrement}
+                    >
+                      <Text style={styles.countButtonText}>+</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => removeRole(index)}
+                      style={styles.removeButton}
+                    >
+                      <Text style={styles.removeButtonText}>✕</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={styles.roleControls}>
-                  <TouchableOpacity
-                    onPress={() => updateRoleCount(index, role.count - 1)}
-                    style={styles.countButton}
-                    disabled={role.count <= 1}
-                  >
-                    <Text style={styles.countButtonText}>-</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.countText}>{role.count}</Text>
-                  <TouchableOpacity
-                    onPress={() => updateRoleCount(index, role.count + 1)}
-                    style={styles.countButton}
-                  >
-                    <Text style={styles.countButtonText}>+</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => removeRole(index)}
-                    style={styles.removeButton}
-                  >
-                    <Text style={styles.removeButtonText}>✕</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))
+              );
+            })
           )}
         </View>
 
@@ -293,11 +354,9 @@ export default function RoleEditor() {
                 <>
                   <Text style={styles.modalSectionTitle}>Categories (Random)</Text>
                   {filteredCategories.map((category) => {
-                    // Convert backend format (TOWN_INVESTIGATIVE) to our format (Town Investigative)
-                    const formattedCategory = category.split('_').map(word =>
-                      word.charAt(0) + word.slice(1).toLowerCase()
-                    ).join(' ');
-                    const categoryColor = ROLE_CATEGORIES[formattedCategory]?.color || "#fff";
+                    // Category is already in enum format (TOWN_INVESTIGATIVE)
+                    const categoryColor = ROLE_CATEGORIES[category]?.color || "#fff";
+                    const displayName = formatCategoryForDisplay(category);
                     return (
                       <TouchableOpacity
                         key={category}
@@ -305,7 +364,7 @@ export default function RoleEditor() {
                         onPress={() => addRole("CATEGORY", category)}
                       >
                         <Text style={styles.modalOptionText}>
-                          [{category.replace(/_/g, " ")}]
+                          [{displayName}]
                         </Text>
                       </TouchableOpacity>
                     );
@@ -325,7 +384,7 @@ export default function RoleEditor() {
                     return (
                       <View key={categoryName}>
                         <Text style={[styles.modalSubsectionTitle, { color: categoryData.color }]}>
-                          {categoryName}
+                          {formatCategoryForDisplay(categoryName)}
                         </Text>
                         {categoryData.roles.map((role) => (
                           <TouchableOpacity
@@ -468,6 +527,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
+  },
+  countButtonDisabled: {
+    backgroundColor: "#2c3e50",
+    opacity: 0.5,
   },
   countButtonText: {
     color: "#fff",

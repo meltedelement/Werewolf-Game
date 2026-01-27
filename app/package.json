@@ -3,10 +3,12 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "bash ./update-api-url.sh && expo start",
+    "start:auto": "expo start",
+    "update-api": "bash ./update-api-url.sh",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "bash ./update-api-url.sh && expo start --android",
+    "ios": "bash ./update-api-url.sh && expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
@@ -24,6 +26,7 @@
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.10",
     "expo-linking": "~8.0.8",
+    "expo-navigation-bar": "~5.0.10",
     "expo-router": "~6.0.13",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",

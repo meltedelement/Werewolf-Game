@@ -8,8 +8,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Werewolf Game Master</Text>
-        <Text style={styles.subtitle}>Manage your Werewolf/Mafia games</Text>
+        <Text style={styles.title}>Werewolf</Text>
       </View>
 
       <View style={styles.menu}>
@@ -27,6 +26,14 @@ export default function Index() {
         >
           <Text style={styles.menuButtonText}>📋 Manage Roles</Text>
           <Text style={styles.menuButtonSubtext}>Create custom role lists</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.menuButton, styles.menuButtonSecondary]}
+          onPress={() => router.push("/player-presets")}
+        >
+          <Text style={styles.menuButtonText}>👥 Player Presets</Text>
+          <Text style={styles.menuButtonSubtext}>Save player name lists</Text>
         </TouchableOpacity>
       </View>
 
@@ -49,14 +56,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#a0a0a0",
   },
   menu: {
     flex: 1,
